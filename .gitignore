@@ -2,8 +2,12 @@
 
 # dependencies
 /backend/node_modules
+/backend/build
 /backend/.tmp
 /backend/.cache
-/backend/build
+/backend/.env
+/backend/.env.example
+
 /frontend/node_modules
 /frontend/.next
+/frontend/.env
