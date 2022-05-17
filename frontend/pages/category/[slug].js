@@ -9,7 +9,6 @@ const Category = ({ category, categories }) => {
     metaTitle: category.attributes.name,
     metaDescription: `All ${category.attributes.name} articles`,
   };
-
   return (
     <Layout categories={categories.data}>
       <Seo seo={seo} />
@@ -38,15 +37,18 @@ export async function getStaticPaths() {
 
 export async function getStaticProps({ params }) {
   const matchingCategories = await fetchAPI("/categories", {
-    filters: { slug: params.slug },
+    filters: {
+      slug: params.slug,
+    },
     populate: {
       articles: {
         populate: "*",
       },
     },
   });
-  const allCategories = await fetchAPI("/categories");
 
+  console.log("macth: ", matchingCategories);
+  const allCategories = await fetchAPI("/categories");
   return {
     props: {
       category: matchingCategories.data[0],
