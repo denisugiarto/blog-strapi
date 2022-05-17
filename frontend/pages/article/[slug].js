@@ -8,12 +8,11 @@ import { fetchAPI } from "../../lib/api";
 import { getStrapiMedia } from "../../lib/media";
 
 const Article = ({ article, categories }) => {
-  const imageUrl = getStrapiMedia(article.attributes.image);
-
+  const imageUrl = getStrapiMedia(article.attributes.cover);
   const seo = {
     metaTitle: article.attributes.title,
     metaDescription: article.attributes.description,
-    shareImage: article.attributes.image,
+    shareImage: article.attributes.cover,
     article: true,
   };
 
@@ -34,13 +33,13 @@ const Article = ({ article, categories }) => {
           <hr className='uk-divider-small' />
           <div className='uk-grid-small uk-flex-left' data-uk-grid='true'>
             <div>
-              {article.attributes.author.data.attributes.picture && (
+              {article.attributes.author.data.attributes.avatar && (
                 <img
                   src={getStrapiMedia(
-                    article.attributes.author.data.attributes.picture
+                    article.attributes.author.data.attributes.avatar
                   )}
                   alt={
-                    article.attributes.author.data.attributes.picture.data
+                    article.attributes.author.data.attributes.avatar.data
                       .attributes.alternativeText
                   }
                   style={{
@@ -56,7 +55,7 @@ const Article = ({ article, categories }) => {
                 By {article.attributes.author.data.attributes.name}
               </p>
               <p className='uk-text-meta uk-margin-remove-top'>
-                <Moment format='MMM Do YYYY'>
+                <Moment format='dddd, DD MMM YYYY'>
                   {article.attributes.published_at}
                 </Moment>
               </p>
@@ -82,13 +81,23 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params }) {
-  console.log(params);
   const articlesRes = await fetchAPI("/articles", {
     filters: {
       slug: params.slug,
     },
-    populate: ["image", "category", "author.picture"],
+    fields: ["title", "slug", "description"],
+    populate: {
+      author: {
+        populate: ["avatar"],
+      },
+      cover: { populate: "*" },
+      category: { populate: "*" },
+      blocks: { populate: "*" },
+    },
+    publicationState: "live",
   });
+  console.log("articlesRes: ", articlesRes);
+
   const categoriesRes = await fetchAPI("/categories");
 
   return {
