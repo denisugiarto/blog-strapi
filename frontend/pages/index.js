@@ -7,10 +7,10 @@ import { fetchAPI } from "../lib/api";
 const Home = ({ articles, categories, homepage }) => {
   return (
     <Layout categories={categories}>
-      {/* <Seo seo={homepage.attributes.seo} /> */}
+      <Seo seo={homepage.attributes.seo} />
       <div className='uk-section'>
         <div className='uk-container uk-container-large'>
-          {/* <h1>{homepage.attributes.title}</h1> */}
+          <h1>{homepage.attributes.title}</h1>
           <Articles articles={articles} />
         </div>
       </div>
@@ -23,9 +23,8 @@ export async function getStaticProps() {
   const [articlesRes, categoriesRes, homepageRes] = await Promise.all([
     fetchAPI("/articles", { populate: ["cover", "category"] }),
     fetchAPI("/categories", { populate: "*" }),
-    fetchAPI("/homepage", { populate: ["seo"] }),
+    fetchAPI("/homepage", { populate: "*" }),
   ]);
-  console.log("homepage: ", homepageRes.data);
 
   return {
     props: {
